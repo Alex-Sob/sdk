@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -55,6 +56,17 @@ namespace Test.Utilities
             }
 
             public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.CSharp7_3;
+
+            public static Test Create([StringSyntax("C#-test")] string source, params ReadOnlySpan<DiagnosticResult> expected)
+            {
+                var test = new Test
+                {
+                    TestCode = source
+                };
+
+                test.ExpectedDiagnostics.AddRange(expected);
+                return test;
+            }
 
             protected override CompilationOptions CreateCompilationOptions()
             {
